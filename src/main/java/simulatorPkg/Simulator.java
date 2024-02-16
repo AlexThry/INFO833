@@ -26,9 +26,9 @@ public class Simulator {
     // Adding event
     //
 
-    public static synchronized void addEvent(EventType type, Integer senderId, Integer receiverId, Integer routerId, Integer duration) {
+    public synchronized void addEvent(Message message, Integer senderId, Integer senderIP, Integer receiverId, Integer routerId, Integer duration) {
         // Création de l'évènement
-        Event event = new Event(type, senderId, receiverId, routerId, time + duration);
+        Event event = new Event(message, senderId, senderIP, receiverId, routerId, time + duration);
         // Ajout de l'évènement à la liste d'events
         events.add(event);
         // Tri de la liste d'events par date d'arrivée
@@ -44,23 +44,33 @@ public class Simulator {
     }
 
     //
+    // Calculate event duration
+    //
+
+    public Integer calculateDuration() {
+        // Caluler le temps ici
+        return 10;
+    }
+
+    //
     // Run the simulator
     //
 
-    public static void run() {
+    public static void run() throws InterruptedException {
         // Time
         while (events.size() > 0) {
-            for (Event event: events) {
-                // If there is events arriving at time T, send events to receivers
+            for (int i = 0; i < events.size(); i++) {
+                Event event = events.get(i);
                 if (event.getArrivalTime() == time) {
                     Integer receiverId = event.getReceiverId();
-                    // Get node from event receiverId
-                    Node receiverNode = network.getNode(receiverId);
+                    Node receiverNode = network.getNodeByDHTId(receiverId);
                     receiverNode.handleEvent(event);
+                    events.remove(event);
                 } else {
                     break;
                 }
             }
+//            Thread.sleep(100);
             time += 1;
         }
     }
