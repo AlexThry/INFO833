@@ -3,17 +3,21 @@ package simulator;
 public class Event {
     private Integer senderDHTId;
     private Integer senderIP;
-    private Integer receiverDHTId;
+    private Integer routerDHTId;
+    private Integer destinationId;
+    private Message message;
     private Integer arrivalTime;
 
-    public Event(Integer senderDHTId, Integer senderIP, Integer receiverDHTId) {
-        this(senderDHTId, senderIP, receiverDHTId, null);
+    public Event(Integer senderDHTId, Integer senderIP, Integer routerDHTId, Message message) {
+        this(senderDHTId, senderIP, routerDHTId, message, null, null);
     }
 
-    public Event(Integer senderDHTId, Integer senderIP, Integer receiverDHTId, Integer arrivalTime) {
+    public Event(Integer senderDHTId, Integer senderIP, Integer routerDHTId, Message message, Integer destinationId, Integer arrivalTime) {
         this.senderDHTId = senderDHTId;
         this.senderIP = senderIP;
-        this.receiverDHTId = receiverDHTId;
+        this.routerDHTId = routerDHTId;
+        this.message = message;
+        this.destinationId = destinationId;
         this.arrivalTime = arrivalTime;
     }
 
@@ -25,8 +29,12 @@ public class Event {
         return senderIP;
     }
 
-    public Integer getReceiverDHTId() {
-        return receiverDHTId;
+    public Integer getRouterDHTId() {
+        return routerDHTId;
+    }
+
+    public Message getMessage() {
+        return message;
     }
 
     public Integer getArrivalTime() {
