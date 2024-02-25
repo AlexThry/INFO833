@@ -20,13 +20,13 @@ public class Message {
     private Integer EVENT_TYPE;
     private String content;
 
+    public Message(Integer EVENT_TYPE) {
+        this(EVENT_TYPE, null);
+    }
+
     public Message(Integer EVENT_TYPE, String content) {
         this.EVENT_TYPE = EVENT_TYPE;
         this.content = content;
-    }
-
-    public Message(Integer EVENT_TYPE) {
-        this(EVENT_TYPE, null);
     }
 
     public Integer getEVENT_TYPE() {

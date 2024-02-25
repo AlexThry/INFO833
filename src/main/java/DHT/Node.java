@@ -16,6 +16,11 @@ public class Node extends GlobalNode {
         super(knownNodes, ID, IP);
     }
 
+    @Override
+    public void handleEvent(Event event) {
+        System.out.println(event);
+    }
+
     public Integer getClosestNodeID(Event event) {
         // Permet de récupérer l'id du noeud connu le plus proche du destinataire
 

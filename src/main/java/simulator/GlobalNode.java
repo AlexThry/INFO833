@@ -24,6 +24,8 @@ public abstract class GlobalNode {
         Collections.sort(this.knownNodes);
     }
 
+    public abstract void handleEvent(Event event);
+
     public Integer getId() {
         return id;
     }

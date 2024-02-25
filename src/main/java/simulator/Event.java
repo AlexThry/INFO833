@@ -11,9 +11,9 @@ public class Event {
     private Message message;
     private Integer arrivalTime;
 
-    public Event(Integer senderID, Integer senderIP, Integer routerID, Message message) {
-        this(senderID, senderIP, routerID, message, null, null);
-    }
+//    public Event(Integer senderID, Integer senderIP, Integer routerID, Message message) {
+//        this(senderID, senderIP, routerID, message, null, null);
+//    }
 
     public Event(Integer senderID, Integer senderIP, Integer routerID, Message message, Integer destinationId, Integer arrivalTime) {
         this.senderID = senderID;
@@ -50,5 +50,17 @@ public class Event {
 
     public void setArrivalTime(Integer arrivalTime) {
         this.arrivalTime = arrivalTime;
+    }
+
+    @Override
+    public String toString() {
+        return "Event{" +
+                "senderID=" + senderID +
+                ", senderIP=" + senderIP +
+                ", routerID=" + routerID +
+                ", destinationId=" + destinationId +
+                ", message=" + message +
+                ", arrivalTime=" + arrivalTime +
+                '}';
     }
 }

@@ -1,5 +1,7 @@
 package simulator;
 
+import DHT.Node;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -7,6 +9,7 @@ import java.util.Comparator;
 public class Simulator {
     private ArrayList<Event> eventList;
     private static Simulator instance;
+    private Network network = Network.getInstance();
     private Integer time;
 
     protected Simulator() {
@@ -22,13 +25,21 @@ public class Simulator {
     }
 
     public void run() {
-
         while (eventList.size() != 0) {
-            for (Event event: eventList) {
+            System.out.println("time: " + this.time);
+            for (int i = 0; i < eventList.size(); i++) {
+                Event event = eventList.get(i);
                 if (event.getArrivalTime() == this.time) {
-
+                    Integer destinationId = event.getDestinationId();
+                    Node destinationNode = (Node) network.getNodeByID(destinationId);
+                    destinationNode.handleEvent(event);
+                    eventList.remove(event);
+                    System.out.println(eventList);
+                } else {
+                    break;
                 }
             }
+            this.time++;
         }
     }
 
