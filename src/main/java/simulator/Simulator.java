@@ -21,6 +21,17 @@ public class Simulator {
         return instance;
     }
 
+    public void run() {
+
+        while (eventList.size() != 0) {
+            for (Event event: eventList) {
+                if (event.getArrivalTime() == this.time) {
+
+                }
+            }
+        }
+    }
+
     public void addEvent(Event event) {
         this.calculateEventDuration(event);
         this.eventList.add(event);
