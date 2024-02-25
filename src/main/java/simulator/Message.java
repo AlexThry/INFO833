@@ -9,6 +9,13 @@ public class Message {
     public static Integer JOIN_ACK = 2;
     public static Integer LEAVE = 3;
     public static Integer LEAVE_ACK = 4;
+    public static Integer SEND = 5;
+    public static Integer DELIVER = 6;
+    public static Integer PUT_REQUEST = 7;
+    public static Integer PUT = 8;
+    public static Integer GET_REQUEST = 9;
+    public static Integer GET = 10;
+
 
     private Integer EVENT_TYPE;
     private String content;

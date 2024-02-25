@@ -1,40 +1,47 @@
 package simulator;
 
 public class Event {
-    private Integer senderDHTId;
+    // ID et IP de l'envoyeur initial
+    private Integer senderID;
     private Integer senderIP;
-    private Integer routerDHTId;
+    // ID du dernier noeud ayant relayé l'evenement
+    private Integer routerID;
+    // ID du destinataire
     private Integer destinationId;
     private Message message;
     private Integer arrivalTime;
 
-    public Event(Integer senderDHTId, Integer senderIP, Integer routerDHTId, Message message) {
-        this(senderDHTId, senderIP, routerDHTId, message, null, null);
+    public Event(Integer senderID, Integer senderIP, Integer routerID, Message message) {
+        this(senderID, senderIP, routerID, message, null, null);
     }
 
-    public Event(Integer senderDHTId, Integer senderIP, Integer routerDHTId, Message message, Integer destinationId, Integer arrivalTime) {
-        this.senderDHTId = senderDHTId;
+    public Event(Integer senderID, Integer senderIP, Integer routerID, Message message, Integer destinationId, Integer arrivalTime) {
+        this.senderID = senderID;
         this.senderIP = senderIP;
-        this.routerDHTId = routerDHTId;
+        this.routerID = routerID;
         this.message = message;
         this.destinationId = destinationId;
         this.arrivalTime = arrivalTime;
     }
 
-    public Integer getSenderDHTId() {
-        return senderDHTId;
+    public Integer getSenderID() {
+        return senderID;
     }
 
     public Integer getSenderIP() {
         return senderIP;
     }
 
-    public Integer getRouterDHTId() {
-        return routerDHTId;
+    public Integer getRouterID() {
+        return routerID;
     }
 
     public Message getMessage() {
         return message;
+    }
+
+    public Integer getDestinationId() {
+        return destinationId;
     }
 
     public Integer getArrivalTime() {
