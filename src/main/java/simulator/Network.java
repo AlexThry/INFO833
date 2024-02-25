@@ -25,7 +25,7 @@ public class Network {
 
     public GlobalNode getNodeByID(Integer ID) {
         for (GlobalNode node : this.nodeList) {
-            if (node.getId().equals(ID)) {
+            if (node.getID().equals(ID)) {
                 return node;
             }
         }

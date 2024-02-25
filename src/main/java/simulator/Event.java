@@ -4,9 +4,9 @@ public class Event {
     // ID et IP de l'envoyeur initial
     private Integer senderID;
     private Integer senderIP;
-    // ID du dernier noeud ayant relayé l'evenement
+    // ID du prochain noeud relayeur
     private Integer routerID;
-    // ID du destinataire
+    // ID du destinataire (peut être nul si on ne connait pas le destinataire)
     private Integer destinationId;
     private Message message;
     private Integer arrivalTime;
@@ -14,6 +14,18 @@ public class Event {
 //    public Event(Integer senderID, Integer senderIP, Integer routerID, Message message) {
 //        this(senderID, senderIP, routerID, message, null, null);
 //    }
+
+    public Event(Integer senderID, Integer senderIP, Message message, Integer arrivalTime) {
+        this(senderID, senderIP,null, message, null, arrivalTime);
+    }
+
+    public Event(Integer senderID, Integer senderIP, Integer routerID, Message message, Integer arrivalTime) {
+        this(senderID, senderIP, routerID, message, null, arrivalTime);
+    }
+
+    public Event(Integer senderID, Integer senderIP, Message message, Integer destinationId, Integer arrivalTime) {
+        this(senderID, senderIP,null, message, destinationId, arrivalTime);
+    }
 
     public Event(Integer senderID, Integer senderIP, Integer routerID, Message message, Integer destinationId, Integer arrivalTime) {
         this.senderID = senderID;

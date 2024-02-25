@@ -5,17 +5,20 @@ import java.util.Collections;
 import java.util.List;
 
 public abstract class GlobalNode {
+    protected Integer left;
+    protected Integer right;
     protected List<Integer> knownNodes;
-    protected Integer id;
+    protected Integer ID;
     protected Integer IP;
+    protected Simulator simulator = Simulator.getInstance();
 
-    public GlobalNode(Integer id, Integer IP) {
-        this(new ArrayList<>(), id, IP);
+    public GlobalNode(Integer ID, Integer IP) {
+        this(new ArrayList<>(), ID, IP);
     }
 
-    public GlobalNode(ArrayList<Integer> knownNodes, Integer id, Integer IP) {
+    public GlobalNode(ArrayList<Integer> knownNodes, Integer ID, Integer IP) {
         this.knownNodes = knownNodes;
-        this.id = id;
+        this.ID = ID;
         this.IP = IP;
     }
     
@@ -24,14 +27,26 @@ public abstract class GlobalNode {
         Collections.sort(this.knownNodes);
     }
 
+    public void setLeft(Integer left) {
+        this.left = left;
+    }
+
+    public void setRight(Integer right) {
+        this.right = right;
+    }
+
     public abstract void handleEvent(Event event);
 
-    public Integer getId() {
-        return id;
+    public Integer getID() {
+        return ID;
     }
 
     public Integer getIP() {
         return IP;
+    }
+
+    public Simulator getSimulator() {
+        return simulator;
     }
 
     //    public void joinRoute(Integer receiverId, Integer senderId, Integer senderIP, Message message) {

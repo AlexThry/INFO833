@@ -5,6 +5,7 @@ import DHT.Node;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 
 public class Simulator {
     private ArrayList<Event> eventList;
@@ -25,18 +26,16 @@ public class Simulator {
     }
 
     public void run() {
-        while (eventList.size() != 0) {
-            System.out.println("time: " + this.time);
-            for (int i = 0; i < eventList.size(); i++) {
-                Event event = eventList.get(i);
-                if (event.getArrivalTime() == this.time) {
-                    Integer destinationId = event.getDestinationId();
-                    Node destinationNode = (Node) network.getNodeByID(destinationId);
-                    destinationNode.handleEvent(event);
-                    eventList.remove(event);
-                    System.out.println(eventList);
-                } else {
-                    break;
+        while (!eventList.isEmpty()) {
+            System.out.println("Time: " + this.time);
+            Iterator<Event> eventIterator = eventList.iterator();
+            while (eventIterator.hasNext()) {
+                Event event = eventIterator.next();
+                if (event.getArrivalTime().equals(this.time)) {
+                    Integer receiverId = event.getRouterID();
+                    Node receiverNode = (Node) network.getNodeByID(receiverId);
+                    receiverNode.handleEvent(event);
+                    eventIterator.remove();
                 }
             }
             this.time++;
@@ -44,17 +43,16 @@ public class Simulator {
     }
 
     public void addEvent(Event event) {
-        this.calculateEventDuration(event);
         this.eventList.add(event);
-        this.sortEvents();
-    }
-
-    public void sortEvents() {
         Collections.sort(eventList, Comparator.comparing(Event::getArrivalTime));
     }
 
-    public void calculateEventDuration(Event event) {
+    public Integer calculateEventArrivalTime() {
         // TODO: calculate time
-        event.setArrivalTime(this.time + 10);
+        return (this.time + 10);
+    }
+
+    public Integer getTime() {
+        return time;
     }
 }
