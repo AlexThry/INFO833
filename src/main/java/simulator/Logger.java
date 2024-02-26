@@ -12,11 +12,10 @@ public class Logger {
     }
 
     public static void log(String prefix, String message, Integer timestamp) {
-        System.out.println("time: " + timestamp + ": " + prefix + ": " + message);
+        System.out.println("EVENT EXECUTED" + "time: " + timestamp + ": " + prefix + ": " + message);
     }
 
     public static void log(String message, Integer timestamp) {
-        System.out.println("time: " + timestamp + ": " + message);
-
+        System.out.println("EVENT EXECUTED" + "time: " + timestamp + ": " + message);
     }
 }

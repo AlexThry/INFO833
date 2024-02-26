@@ -46,4 +46,15 @@ public class Node extends GlobalNode {
         // change this result
         return route;
     }
+
+    @Override
+    public String toString() {
+        return "Node{" +
+                "left=" + left +
+                ", right=" + right +
+                ", knownNodes=" + knownNodes +
+                ", ID=" + ID +
+                ", IP=" + IP +
+                '}';
+    }
 }

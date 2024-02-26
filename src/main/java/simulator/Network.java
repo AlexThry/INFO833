@@ -54,4 +54,15 @@ public class Network {
     public void removeNode(GlobalNode node) {
         this.nodeList.remove(node);
     }
+
+    public List<GlobalNode> getNodeList() {
+        return nodeList;
+    }
+
+    @Override
+    public String toString() {
+        return "Network{" +
+                "nodeList=" + nodeList +
+                '}';
+    }
 }

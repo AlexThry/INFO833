@@ -68,7 +68,6 @@ public class Event {
     public String toString() {
         return "Event{" +
                 "senderID=" + senderID +
-                ", senderIP=" + senderIP +
                 ", routerID=" + routerID +
                 ", destinationId=" + destinationId +
                 ", message=" + message +

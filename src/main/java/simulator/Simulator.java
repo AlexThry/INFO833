@@ -2,16 +2,13 @@ package simulator;
 
 import DHT.Node;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
+import java.util.*;
 
 public class Simulator {
-    private ArrayList<Event> eventList;
+    private static List<Event> eventList;
     private static Simulator instance;
-    private Network network = Network.getInstance();
-    private Integer time;
+    private static Network network = Network.getInstance();
+    private static Integer time;
 
     protected Simulator() {
         this.eventList = new ArrayList<>();
@@ -25,31 +22,37 @@ public class Simulator {
         return instance;
     }
 
-    public void run() {
+    public static void run() throws InterruptedException {
+        // Time
         while (!eventList.isEmpty()) {
-            System.out.println("Time: " + this.time);
-            Iterator<Event> eventIterator = eventList.iterator();
-            while (eventIterator.hasNext()) {
-                Event event = eventIterator.next();
-                if (event.getArrivalTime().equals(this.time)) {
-                    Integer receiverId = event.getRouterID();
-                    Node receiverNode = (Node) network.getNodeByID(receiverId);
-                    receiverNode.handleEvent(event);
-                    eventIterator.remove();
+            System.out.println(time);
+            for (int i = 0; i < eventList.size(); i++) {
+                Event event = eventList.get(i);
+                System.out.println("arrival time: " + event.getArrivalTime() + "; time: " + time);
+                if (Objects.equals(event.getArrivalTime(), time)) {
+                    network.getNodeByID(event.getRouterID()).handleEvent(event);
+                } else {
+                    break;
                 }
             }
-            this.time++;
+            System.out.println(eventList);
+            Thread.sleep(1000);
+            time += 1;
         }
     }
 
+    public void removeEvent() {
+        eventList.remove(0);
+    }
+
     public void addEvent(Event event) {
-        this.eventList.add(event);
+        eventList.add(event);
         Collections.sort(eventList, Comparator.comparing(Event::getArrivalTime));
     }
 
     public Integer calculateEventArrivalTime() {
         // TODO: calculate time
-        return (this.time + 10);
+        return (this.time + 2);
     }
 
     public Integer getTime() {

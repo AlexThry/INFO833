@@ -20,6 +20,7 @@ public class main {
         Node node4 = new Node(60, 60);
         Node node5 = new Node(24, 24);
         Node node6 = new Node(26, 26);
+        Node node7 = new Node(59, 59);
 
         network.addNode(node1);
         network.addNode(node2);
@@ -27,6 +28,7 @@ public class main {
         network.addNode(node4);
         network.addNode(node5);
         network.addNode(node6);
+        network.addNode(node7);
 
         node1.setLeft(34);
         node1.setRight(60);
@@ -42,15 +44,18 @@ public class main {
 
 
         Message joinRequestMessage = new Message(Message.JOIN_REQUEST);
-        Message joinMessage = new Message(Message.JOIN);
 
-        Event event1 = new Event(24, 24, 34, joinRequestMessage, 10);
-        Event event2 = new Event(26, 60, 26, joinMessage, 13);
+        Event event1 = new Event(24, 24, 50, joinRequestMessage, 1);
+        Event event2 = new Event(26, 26, 50, joinRequestMessage, 1);
+        Event event3 = new Event(59, 59, 34, joinRequestMessage, 20);
 
         simulator.addEvent(event1);
-        simulator.addEvent(event2);
+//        simulator.addEvent(event2);
+//        simulator.addEvent(event3);
 
         simulator.run();
+
+        System.out.println(network.getNodeList());
 
     }
 }
