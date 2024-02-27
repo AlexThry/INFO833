@@ -2,6 +2,9 @@ package simulator;
 
 public class Logger {
     private static Logger instance;
+
+    public static String JOIN_REQUEST = "JOIN_REQUEST";
+    public static String JOIN = "JOIN";
     private Logger() {}
 
     public static synchronized Logger getInstance() {

@@ -1,8 +1,8 @@
 package simulator;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import DHT.Node;
+
+import java.util.*;
 
 public class Network {
     private static Network instance;
@@ -21,6 +21,7 @@ public class Network {
 
     public void addNode(GlobalNode node) {
         this.nodeList.add(node);
+        Collections.sort(nodeList, Comparator.comparing(GlobalNode::getID));
     }
 
     public GlobalNode getNodeByID(Integer ID) {

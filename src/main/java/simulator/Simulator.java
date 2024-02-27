@@ -26,19 +26,16 @@ public class Simulator {
         // Time
         while (!eventList.isEmpty()) {
             System.out.println(time);
-            for (int i = 0; i < eventList.size(); i++) {
-                Event event = eventList.get(i);
-                System.out.println("arrival time: " + event.getArrivalTime() + "; time: " + time);
+            while (!eventList.isEmpty()) {
+                Event event = eventList.get(0);
                 if (Objects.equals(event.getArrivalTime(), time)) {
                     network.getNodeByID(event.getRouterID()).handleEvent(event);
                     removeEvent();
-
                 } else {
                     break;
                 }
             }
-            System.out.println(eventList);
-            Thread.sleep(1000);
+            Thread.sleep(500);
             time += 1;
         }
     }
