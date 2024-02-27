@@ -31,6 +31,8 @@ public class Simulator {
                 System.out.println("arrival time: " + event.getArrivalTime() + "; time: " + time);
                 if (Objects.equals(event.getArrivalTime(), time)) {
                     network.getNodeByID(event.getRouterID()).handleEvent(event);
+                    removeEvent();
+
                 } else {
                     break;
                 }
@@ -41,7 +43,7 @@ public class Simulator {
         }
     }
 
-    public void removeEvent() {
+    public static void removeEvent() {
         eventList.remove(0);
     }
 
