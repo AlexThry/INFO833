@@ -1,4 +1,6 @@
-package simulator;
+package DHT;
+
+import simulator.Simulator;
 
 public class Logger {
     private static Logger instance;
@@ -52,15 +54,15 @@ public class Logger {
 
         String message = "EVENT EXECUTED: " +
                 eventType +
-                "\nAT TIME " +
+                "\nAT TIME: " +
                 simulator.getTime() +
-                "\nFROM NODE " +
+                "\nFROM NODE: " +
                 routerID +
-                "\nTO NODE " +
+                "\nTO NODE: " +
                 receiverID;
 
         if (senderID != null) {
-            message += "\nFOR NODE " +
+            message += "\nFOR NODE: " +
                             senderID;
         }
 

@@ -1,7 +1,7 @@
 package DHT;
 
 import simulator.Event;
-import simulator.EventHandler;
+import simulator.GlobalEventHandler;
 import simulator.GlobalNode;
 import simulator.Message;
 

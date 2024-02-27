@@ -49,6 +49,10 @@ public abstract class GlobalNode {
         return simulator;
     }
 
+    public List<Integer> getKnownNodes() {
+        return knownNodes;
+    }
+
     public Integer getLeft() {
         return left;
     }
