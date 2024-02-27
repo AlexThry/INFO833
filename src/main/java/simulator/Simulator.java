@@ -25,7 +25,6 @@ public class Simulator {
     public static void run() throws InterruptedException {
         // Time
         while (!eventList.isEmpty()) {
-            System.out.println(time);
             while (!eventList.isEmpty()) {
                 Event event = eventList.get(0);
                 if (Objects.equals(event.getArrivalTime(), time)) {
@@ -35,7 +34,6 @@ public class Simulator {
                     break;
                 }
             }
-            Thread.sleep(500);
             time += 1;
         }
     }

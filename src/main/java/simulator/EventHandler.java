@@ -2,6 +2,7 @@ package simulator;
 
 import DHT.Node;
 import org.w3c.dom.traversal.NodeIterator;
+import simulator.MessagesObjects.LeaveObject;
 
 public class EventHandler {
     protected Node node;
@@ -23,6 +24,9 @@ public class EventHandler {
             case 2:
                 this.joinAckHandler(event);
                 break;
+            case 3:
+                this.leaveHandler(event);
+                break;
         }
     }
 
@@ -37,18 +41,18 @@ public class EventHandler {
         boolean insertLeft = (senderID < nodeID && nodeID < node.left) || (senderID < nodeID && senderID > node.left);
 
         if (insertLeft) {
-            Logger.log("JOINING", "NEW JOIN ON " + node.left + " for " + senderID, simulator.getTime());
+            Logger.log(Logger.JOIN, nodeID, node.getLeft(), senderID);
             simulator.addEvent(new Event(senderID, senderIP, node.left, new Message(Message.JOIN), simulator.calculateEventArrivalTime()));
             node.setLeft(senderID);
             network.getNodeByIP(senderIP).setRight(nodeID);
         } else if (insertRight) {
-            Logger.log("JOINING", "NEW JOIN ON " + node.right + " for " + senderID, simulator.getTime());
+            Logger.log(Logger.JOIN, nodeID, node.getRight(), senderID);
             simulator.addEvent(new Event(senderID, senderIP, node.right, new Message(Message.JOIN), simulator.calculateEventArrivalTime()));
             node.setRight(senderID);
             network.getNodeByIP(senderIP).setLeft(nodeID);
         } else {
             Integer closest = getClosestRouter(event);
-            Logger.log("JOIN_REQUEST: "+ nodeID, "NEW JOIN_REQUEST ON " + closest + " for " + senderID, simulator.getTime());
+            Logger.log(Logger.JOIN_REQUEST, nodeID, closest, senderID);
             simulator.addEvent(new Event(senderID, senderIP, closest, new Message(Message.JOIN_REQUEST), simulator.calculateEventArrivalTime()));
         }
     }
@@ -57,24 +61,41 @@ public class EventHandler {
         Integer senderID = event.getSenderID();
         Integer senderIP = event.getSenderIP();
         Integer nodeID = node.getID();
+        Integer nodeIP = node.getIP();
         Network network = Network.getInstance();
 
         boolean insertRight = (senderID > nodeID && nodeID > node.right) || (senderID > nodeID && senderID < node.right);
 
-        Logger.log("JOINING", "NEW JOIN ON " + nodeID + " FOR " + senderID, simulator.getTime());
-        System.out.println(node);
+        Message joinAckMessage = new Message(2);
+
+        Logger.log(Logger.JOIN, nodeID, senderID);
         if (insertRight) {
+            simulator.addEvent(new Event(nodeID, nodeIP, node.getLeft(), joinAckMessage, simulator.calculateEventArrivalTime()));
             node.setRight(senderID);
             network.getNodeByIP(senderIP).setLeft(nodeID);
-
         } else {
+            simulator.addEvent(new Event(nodeID, nodeIP, node.getRight(), joinAckMessage, simulator.calculateEventArrivalTime()));
             node.setLeft(senderID);
             network.getNodeByIP(senderIP).setRight(nodeID);
         }
     }
 
     public void joinAckHandler(Event event) {
+        Integer nodeID = node.getID();
+        Integer senderID = event.getSenderID();
 
+        Logger.log(Logger.JOIN_ACK, senderID, nodeID);
+    }
+
+    public void leaveHandler(Event event) {
+        Integer senderID = event.getSenderID();
+        Message message = event.getMessage();
+        LeaveObject object = (LeaveObject) message.getContent();
+        if (senderID == node.right) {
+            node.setRight(object.getRight());
+        } else {
+            node.setLeft(object.getLeft());
+        }
     }
 
     public Integer getClosestRouter(Event event) {
@@ -86,7 +107,7 @@ public class EventHandler {
             closest = node.left;
         }
 
-        for (Integer nodeID: node.knownNodes) {
+        for (Integer nodeID : node.knownNodes) {
             if ((Math.abs(senderId - nodeID)) < (Math.abs(senderId - closest))) {
                 closest = nodeID;
             }

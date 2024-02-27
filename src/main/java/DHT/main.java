@@ -1,9 +1,7 @@
 package DHT;
 
-import simulator.Event;
-import simulator.Message;
-import simulator.Network;
-import simulator.Simulator;
+import simulator.*;
+import simulator.MessagesObjects.LeaveObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,13 +43,20 @@ public class main {
 
         Message joinRequestMessage = new Message(Message.JOIN_REQUEST);
 
-        Event event1 = new Event(61, 61, 50, joinRequestMessage, 1);
-        Event event2 = new Event(26, 26, 50, joinRequestMessage, 1);
-        Event event3 = new Event(59, 59, 34, joinRequestMessage, 6);
+        Event join1 = new Event(61, 61, 34, joinRequestMessage, 1);
+        Event join2 = new Event(26, 26, 50, joinRequestMessage, 1);
+        Event join3 = new Event(59, 59, 34, joinRequestMessage, 6);
 
-        simulator.addEvent(event1);
-        simulator.addEvent(event2);
-        simulator.addEvent(event3);
+        MessageObject leaveObject = new LeaveObject(network.getNodeByIP(10).getLeft(), network. getNodeByIP(10).getRight());
+
+        Message leaveMessage1 = new Message(Message.LEAVE, leaveObject);
+
+        Event leave1 = new Event(10, 10, 60, leaveMessage1, 10);
+        Event leave2 = new Event(10, 10, 34, leaveMessage1, 10);
+
+        simulator.addEvent(join1);
+        simulator.addEvent(join2);
+        simulator.addEvent(join3);
 
         simulator.run();
 

@@ -49,6 +49,14 @@ public abstract class GlobalNode {
         return simulator;
     }
 
+    public Integer getLeft() {
+        return left;
+    }
+
+    public Integer getRight() {
+        return right;
+    }
+
     //    public void joinRoute(Integer receiverId, Integer senderId, Integer senderIP, Message message) {
 //        Message join = new Message("JOIN", 1);
 //        if (senderId > this.ID && this.ID > this.right) {

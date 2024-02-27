@@ -18,13 +18,13 @@ public class Message {
 
 
     private Integer EVENT_TYPE;
-    private String content;
+    private MessageObject content;
 
     public Message(Integer EVENT_TYPE) {
         this(EVENT_TYPE, null);
     }
 
-    public Message(Integer EVENT_TYPE, String content) {
+    public Message(Integer EVENT_TYPE, MessageObject content) {
         this.EVENT_TYPE = EVENT_TYPE;
         this.content = content;
     }
@@ -33,7 +33,7 @@ public class Message {
         return EVENT_TYPE;
     }
 
-    public String getContent() {
+    public MessageObject getContent() {
         return content;
     }
 
@@ -41,7 +41,7 @@ public class Message {
     public String toString() {
         return "Message{" +
                 "EVENT_TYPE=" + EVENT_TYPE +
-                ", content='" + content + '\'' +
+                ", content=" + content  +
                 '}';
     }
 }
