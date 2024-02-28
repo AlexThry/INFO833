@@ -7,8 +7,9 @@ public class Message {
     public static final Integer JOIN_ACK = 2;
     public static final Integer LEAVE_REQUEST = 3;
     public static final Integer LEAVE = 4;
-    public static final Integer LEAVE_ACK = 5;
-
+    public static final Integer SEND = 5;
+    public static final Integer FORWARD = 6;
+    public static final Integer DELIVER = 7;
 
     private final Integer eventType;
     private final MessageObject content;

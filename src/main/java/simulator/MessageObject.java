@@ -1,5 +1,3 @@
 package simulator;
 
-public interface MessageObject {
-
-}
+public interface MessageObject {}

@@ -35,7 +35,7 @@ public class Simulator {
         eventList.remove(0);
     }
 
-    public void addEvent(Event event) {
+    public static void addEvent(Event event) {
         eventList.add(event);
         eventList.sort(Comparator.comparing(Event::getArrivalTime));
     }
@@ -47,5 +47,9 @@ public class Simulator {
 
     public Integer getTime() {
         return time;
+    }
+
+    public static List<Event> getEventList() {
+        return eventList;
     }
 }

@@ -12,15 +12,6 @@ public class Logger {
     public static final Integer LEAVE_REQUEST = 3;
     public static final Integer LEAVE = 4;
 
-    private Logger() {
-    }
-
-    public static synchronized Logger getInstance() {
-        if (instance == null) {
-            instance = new Logger();
-        }
-        return instance;
-    }
 
     public static void log(Integer eventType, Integer routerID, Integer receiverID, Integer senderID) {
         System.out.println(getMessage(eventType, routerID, receiverID, senderID));

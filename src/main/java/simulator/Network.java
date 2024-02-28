@@ -4,7 +4,7 @@ import java.util.*;
 
 public class Network {
     private static Network instance;
-    private final List<GlobalNode> nodeList;
+    private static List<GlobalNode> nodeList;
 
     private Network() {
         this.nodeList = new ArrayList<>();
@@ -17,13 +17,13 @@ public class Network {
         return instance;
     }
 
-    public void addNode(GlobalNode node) {
-        this.nodeList.add(node);
+    public static void addNode(GlobalNode node) {
+        nodeList.add(node);
         nodeList.sort(Comparator.comparing(GlobalNode::getID));
     }
 
-    public GlobalNode getNodeByID(Integer ID) {
-        for (GlobalNode node : this.nodeList) {
+    public static GlobalNode getNodeByID(Integer ID) {
+        for (GlobalNode node : nodeList) {
             if (node.getID().equals(ID)) {
                 return node;
             }
@@ -31,8 +31,8 @@ public class Network {
         return null;
     }
 
-    public GlobalNode getNodeByIP(Integer IP) {
-        for (GlobalNode node : this.nodeList) {
+    public static GlobalNode getNodeByIP(Integer IP) {
+        for (GlobalNode node : nodeList) {
             if (node.getIP().equals(IP)) {
                 return node;
             }
@@ -40,23 +40,15 @@ public class Network {
         return null;
     }
 
-    public GlobalNode getRandomNode() {
-        if (this.nodeList.isEmpty()) {
-            return null;
-        }
-
-        Random random = new Random();
-        int randomIndex = random.nextInt(this.nodeList.size());
-        return this.nodeList.get(randomIndex);
+    public static void removeNode(GlobalNode node) {
+        nodeList.remove(node);
     }
 
-    public void removeNode(GlobalNode node) {
-        this.nodeList.remove(node);
-    }
-
-    public List<GlobalNode> getNodeList() {
+    public static List<GlobalNode> getNodeList() {
         return nodeList;
     }
+
+
 
     @Override
     public String toString() {

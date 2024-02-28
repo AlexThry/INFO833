@@ -1,10 +1,7 @@
 package dht;
 
-import simulator.Event;
-import simulator.GlobalEventHandler;
-import simulator.Message;
+import simulator.*;
 import simulator.MessagesObjects.LeaveObject;
-import simulator.Network;
 
 import java.util.Objects;
 
@@ -28,25 +25,24 @@ public class EventHandler extends GlobalEventHandler {
         Integer senderID = event.getSenderID();
         Integer senderIP = event.getSenderIP();
         Integer nodeID = this.node.getID();
-        Network network = Network.getInstance();
 
         boolean insertRight = (senderID > nodeID && nodeID > node.getRight()) || (senderID > nodeID && senderID < node.getRight());
         boolean insertLeft = (senderID < nodeID && nodeID < node.getLeft()) || (senderID < nodeID && senderID > node.getLeft());
 
         if (insertLeft) {
             Logger.log(Logger.JOIN, nodeID, node.getLeft(), senderID);
-            simulator.addEvent(new Event(senderID, senderIP, node.getLeft(), new Message(Message.JOIN), simulator.calculateEventArrivalTime()));
+            Simulator.addEvent(new Event(senderID, senderIP, node.getLeft(), new Message(Message.JOIN), simulator.calculateEventArrivalTime()));
             node.setLeft(senderID);
-            network.getNodeByIP(senderIP).setRight(nodeID);
+            Network.getNodeByIP(senderIP).setRight(nodeID);
         } else if (insertRight) {
             Logger.log(Logger.JOIN, nodeID, node.getRight(), senderID);
-            simulator.addEvent(new Event(senderID, senderIP, node.getRight(), new Message(Message.JOIN), simulator.calculateEventArrivalTime()));
+            Simulator.addEvent(new Event(senderID, senderIP, node.getRight(), new Message(Message.JOIN), simulator.calculateEventArrivalTime()));
             node.setRight(senderID);
-            network.getNodeByIP(senderIP).setLeft(nodeID);
+            Network.getNodeByIP(senderIP).setLeft(nodeID);
         } else {
             Integer closest = getClosestRouter(event);
             Logger.log(Logger.JOIN_REQUEST, nodeID, closest, senderID);
-            simulator.addEvent(new Event(senderID, senderIP, closest, new Message(Message.JOIN_REQUEST), simulator.calculateEventArrivalTime()));
+            Simulator.addEvent(new Event(senderID, senderIP, closest, new Message(Message.JOIN_REQUEST), simulator.calculateEventArrivalTime()));
         }
     }
 
@@ -55,21 +51,26 @@ public class EventHandler extends GlobalEventHandler {
         Integer senderIP = event.getSenderIP();
         Integer nodeID = node.getID();
         Integer nodeIP = node.getIP();
-        Network network = Network.getInstance();
+        Integer left = node.getLeft();
+        Integer right = node.getRight();
 
-        boolean insertRight = (senderID > nodeID && nodeID > node.getRight()) || (senderID > nodeID && senderID < node.getRight());
+        boolean insertRight = (senderID > nodeID && nodeID > right) || (senderID > nodeID && senderID < right);
 
-        Message joinAckMessage = new Message(2);
+        Message joinAckMessage = new Message(Message.JOIN_ACK);
 
-        Logger.log(Logger.JOIN, nodeID, senderID);
+        Logger.log(event);
         if (insertRight) {
-            simulator.addEvent(new Event(nodeID, nodeIP, node.getLeft(), joinAckMessage, simulator.calculateEventArrivalTime()));
+            Logger.log(Logger.JOIN, nodeID, senderID);
+            Logger.log("JOINING " + senderID + " ON RIGHT OF NODE " + nodeID);
+            Simulator.addEvent(new Event(nodeID, nodeIP, left, joinAckMessage, simulator.calculateEventArrivalTime()));
             node.setRight(senderID);
-            network.getNodeByIP(senderIP).setLeft(nodeID);
+            Network.getNodeByIP(senderIP).setLeft(nodeID);
         } else {
-            simulator.addEvent(new Event(nodeID, nodeIP, node.getRight(), joinAckMessage, simulator.calculateEventArrivalTime()));
+            Logger.log(Logger.JOIN, nodeID, senderID);
+            Logger.log("JOINING " + senderID + " ON LEFT OF NODE " + nodeID);
+            Simulator.addEvent(new Event(nodeID, nodeIP, right, joinAckMessage, simulator.calculateEventArrivalTime()));
             node.setLeft(senderID);
-            network.getNodeByIP(senderIP).setRight(nodeID);
+            Network.getNodeByIP(senderIP).setRight(nodeID);
         }
     }
 
@@ -94,12 +95,12 @@ public class EventHandler extends GlobalEventHandler {
 
         Message leaveMessage = new Message(Message.LEAVE, leaveObject);
 
-        simulator.addEvent(new Event(nodeID, nodeIP, node.getLeft(), leaveMessage, simulator.calculateEventArrivalTime()));
-        simulator.addEvent(new Event(nodeID, nodeIP, node.getRight(), leaveMessage, simulator.calculateEventArrivalTime()));
+        Simulator.addEvent(new Event(nodeID, nodeIP, node.getLeft(), leaveMessage, simulator.calculateEventArrivalTime()));
+        Simulator.addEvent(new Event(nodeID, nodeIP, node.getRight(), leaveMessage, simulator.calculateEventArrivalTime()));
 
         for (Integer knownNode: node.getKnownNodes()) {
             Logger.log(Logger.LEAVE_REQUEST, nodeID, knownNode);
-            simulator.addEvent(new Event(nodeID, nodeIP, knownNode, leaveMessage, simulator.calculateEventArrivalTime()));
+            Simulator.addEvent(new Event(nodeID, nodeIP, knownNode, leaveMessage, simulator.calculateEventArrivalTime()));
         }
 
         node.setLeft(null);
