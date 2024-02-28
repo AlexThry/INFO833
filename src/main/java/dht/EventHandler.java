@@ -1,4 +1,4 @@
-package DHT;
+package dht;
 
 import simulator.Event;
 import simulator.GlobalEventHandler;
@@ -6,25 +6,20 @@ import simulator.Message;
 import simulator.MessagesObjects.LeaveObject;
 import simulator.Network;
 
+import java.util.Objects;
+
 public class EventHandler extends GlobalEventHandler {
     public EventHandler(Node node) {
         super(node);
     }
 
     public void handleEvent(Event event) {
-        switch (event.getMessage().getEVENT_TYPE()) {
-            case 0:
-                this.joinRequestHandler(event);
-                break;
-            case 1:
-                this.joinHandler(event);
-                break;
-            case 2:
-                this.joinAckHandler(event);
-                break;
-            case 3:
-                this.leaveHandler(event);
-                break;
+        switch (event.getMessage().getEventType()) {
+            case 0 -> this.joinRequestHandler(event);
+            case 1 -> this.joinHandler(event);
+            case 2 -> this.joinAckHandler(event);
+            case 3 -> this.leaveRequestHandler();
+            case 4 -> this.leaveHandler(event);
         }
     }
 
@@ -85,14 +80,48 @@ public class EventHandler extends GlobalEventHandler {
         Logger.log(Logger.JOIN_ACK, senderID, nodeID);
     }
 
+    public void leaveRequestHandler() {
+
+        Integer nodeID = node.getID();
+        Integer nodeIP = node.getIP();
+        Integer left = node.getLeft();
+        Integer right = node.getRight();
+
+        Logger.log(Logger.LEAVE_REQUEST, nodeID, left);
+        Logger.log(Logger.LEAVE_REQUEST, nodeID, right);
+
+        LeaveObject leaveObject = new LeaveObject(node.getLeft(), node.getRight());
+
+        Message leaveMessage = new Message(Message.LEAVE, leaveObject);
+
+        simulator.addEvent(new Event(nodeID, nodeIP, node.getLeft(), leaveMessage, simulator.calculateEventArrivalTime()));
+        simulator.addEvent(new Event(nodeID, nodeIP, node.getRight(), leaveMessage, simulator.calculateEventArrivalTime()));
+
+        for (Integer knownNode: node.getKnownNodes()) {
+            Logger.log(Logger.LEAVE_REQUEST, nodeID, knownNode);
+            simulator.addEvent(new Event(nodeID, nodeIP, knownNode, leaveMessage, simulator.calculateEventArrivalTime()));
+        }
+
+        node.setLeft(null);
+        node.setRight(null);
+        node.getKnownNodes().clear();
+    }
+
     public void leaveHandler(Event event) {
         Integer senderID = event.getSenderID();
+        Integer nodeID = node.getID();
+
         Message message = event.getMessage();
+
         LeaveObject object = (LeaveObject) message.getContent();
-        if (senderID == node.getRight()) {
+
+        Logger.log(Logger.LEAVE, nodeID, senderID);
+        if (Objects.equals(senderID, node.getRight())) {
             node.setRight(object.getRight());
-        } else {
+        } else if (Objects.equals(senderID, node.getLeft())) {
             node.setLeft(object.getLeft());
+        } else {
+            node.getKnownNodes().remove(senderID);
         }
     }
 

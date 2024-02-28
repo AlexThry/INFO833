@@ -12,11 +12,11 @@ public abstract class GlobalNode {
     protected Integer IP;
     protected Simulator simulator = Simulator.getInstance();
 
-    public GlobalNode(Integer ID, Integer IP) {
+    protected GlobalNode(Integer ID, Integer IP) {
         this(new ArrayList<>(), ID, IP);
     }
 
-    public GlobalNode(ArrayList<Integer> knownNodes, Integer ID, Integer IP) {
+    protected GlobalNode(ArrayList<Integer> knownNodes, Integer ID, Integer IP) {
         this.knownNodes = knownNodes;
         this.ID = ID;
         this.IP = IP;
@@ -60,34 +60,4 @@ public abstract class GlobalNode {
     public Integer getRight() {
         return right;
     }
-
-    //    public void joinRoute(Integer receiverId, Integer senderId, Integer senderIP, Message message) {
-//        Message join = new Message("JOIN", 1);
-//        if (senderId > this.ID && this.ID > this.right) {
-//            // On prévient l'autre noeud d'ajouter le nouveau noeud en voisin
-//            getSimulator().addEvent(join, senderId, senderIP, this.right, this.ID, getSimulator().calculateDuration());
-//            this.setRight(senderId);
-//            getNetwork().getNodeByIP(senderIP).setLeft(this.ID);
-//        } else if (senderId < this.ID && this.ID < this.left) {
-//            getSimulator().addEvent(join, senderId, senderIP, this.left, this.ID, getSimulator().calculateDuration());
-//            this.setLeft(senderId);
-//            getNetwork().getNodeByIP(senderIP).setRight(this.ID);
-//        } else if (Math.abs(senderId - this.right) < Math.abs(senderId - this.left)) {
-//            if (senderId < this.right) {
-//                getSimulator().addEvent(join, senderId, senderIP, this.right, this.ID, getSimulator().calculateDuration());
-//                this.setRight(senderId);
-//                getNetwork().getNodeByIP(senderIP).setLeft(this.ID);
-//            } else {
-//                getSimulator().addEvent(message, senderId, senderIP, this.right, this.ID, getSimulator().calculateDuration());
-//            }
-//        } else {
-//            if (senderId > this.left) {
-//                getSimulator().addEvent(join, senderId, senderIP, this.left, this.ID, getSimulator().calculateDuration());
-//                this.setLeft(senderId);
-//                getNetwork().getNodeByIP(senderIP).setRight(this.ID);
-//            } else {
-//                getSimulator().addEvent(message, senderId, senderIP, this.left, this.ID, getSimulator().calculateDuration());
-//            }
-//        }
-//    }
 }

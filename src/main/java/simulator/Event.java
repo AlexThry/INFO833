@@ -2,18 +2,14 @@ package simulator;
 
 public class Event {
     // ID et IP de l'envoyeur initial
-    private Integer senderID;
-    private Integer senderIP;
+    private final Integer senderID;
+    private final Integer senderIP;
     // ID du prochain noeud relayeur
-    private Integer routerID;
+    private final Integer routerID;
     // ID du destinataire (peut être nul si on ne connait pas le destinataire)
-    private Integer destinationId;
-    private Message message;
+    private final Integer destinationId;
+    private final Message message;
     private Integer arrivalTime;
-
-//    public Event(Integer senderID, Integer senderIP, Integer routerID, Message message) {
-//        this(senderID, senderIP, routerID, message, null, null);
-//    }
 
     public Event(Integer senderID, Integer senderIP, Message message, Integer arrivalTime) {
         this(senderID, senderIP,null, message, null, arrivalTime);

@@ -1,28 +1,21 @@
 package simulator;
 
-import DHT.Node;
-
 import java.util.*;
 
 public class Simulator {
-    private static List<Event> eventList;
+    private static List<Event> eventList = new ArrayList<>();;
     private static Simulator instance;
-    private static Network network = Network.getInstance();
-    private static Integer time;
+    private static final Network network = Network.getInstance();
+    private static Integer time = 0;
 
-    protected Simulator() {
-        this.eventList = new ArrayList<>();
-        this.time = 0;
-    }
-
-    public synchronized static Simulator getInstance() {
+    public static synchronized Simulator getInstance() {
         if (instance == null) {
             instance = new Simulator();
         }
         return instance;
     }
 
-    public static void run() throws InterruptedException {
+    public static void run() {
         // Time
         while (!eventList.isEmpty()) {
             while (!eventList.isEmpty()) {
@@ -44,12 +37,12 @@ public class Simulator {
 
     public void addEvent(Event event) {
         eventList.add(event);
-        Collections.sort(eventList, Comparator.comparing(Event::getArrivalTime));
+        eventList.sort(Comparator.comparing(Event::getArrivalTime));
     }
 
     public Integer calculateEventArrivalTime() {
         // TODO: calculate time
-        return (this.time + 2);
+        return (time + 2);
     }
 
     public Integer getTime() {

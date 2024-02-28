@@ -1,10 +1,8 @@
 package simulator;
 
-import DHT.Logger;
-import DHT.Node;
-import simulator.MessagesObjects.LeaveObject;
+import dht.Node;
 
-public class GlobalEventHandler {
+public abstract class GlobalEventHandler {
     protected Node node;
 
     protected Simulator simulator = Simulator.getInstance();

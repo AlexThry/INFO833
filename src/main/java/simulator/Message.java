@@ -1,36 +1,29 @@
 package simulator;
 
-import java.lang.reflect.Type;
-
 public class Message {
 
-    public static Integer JOIN_REQUEST = 0;
-    public static Integer JOIN = 1;
-    public static Integer JOIN_ACK = 2;
-    public static Integer LEAVE = 3;
-    public static Integer LEAVE_ACK = 4;
-    public static Integer SEND = 5;
-    public static Integer DELIVER = 6;
-    public static Integer PUT_REQUEST = 7;
-    public static Integer PUT = 8;
-    public static Integer GET_REQUEST = 9;
-    public static Integer GET = 10;
+    public static final Integer JOIN_REQUEST = 0;
+    public static final Integer JOIN = 1;
+    public static final Integer JOIN_ACK = 2;
+    public static final Integer LEAVE_REQUEST = 3;
+    public static final Integer LEAVE = 4;
+    public static final Integer LEAVE_ACK = 5;
 
 
-    private Integer EVENT_TYPE;
-    private MessageObject content;
+    private final Integer eventType;
+    private final MessageObject content;
 
-    public Message(Integer EVENT_TYPE) {
-        this(EVENT_TYPE, null);
+    public Message(Integer eventType) {
+        this(eventType, null);
     }
 
-    public Message(Integer EVENT_TYPE, MessageObject content) {
-        this.EVENT_TYPE = EVENT_TYPE;
+    public Message(Integer eventType, MessageObject content) {
+        this.eventType = eventType;
         this.content = content;
     }
 
-    public Integer getEVENT_TYPE() {
-        return EVENT_TYPE;
+    public Integer getEventType() {
+        return eventType;
     }
 
     public MessageObject getContent() {
@@ -40,7 +33,7 @@ public class Message {
     @Override
     public String toString() {
         return "Message{" +
-                "EVENT_TYPE=" + EVENT_TYPE +
+                "EVENT_TYPE=" + eventType +
                 ", content=" + content  +
                 '}';
     }

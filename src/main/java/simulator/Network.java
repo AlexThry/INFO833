@@ -1,12 +1,10 @@
 package simulator;
 
-import DHT.Node;
-
 import java.util.*;
 
 public class Network {
     private static Network instance;
-    private List<GlobalNode> nodeList;
+    private final List<GlobalNode> nodeList;
 
     private Network() {
         this.nodeList = new ArrayList<>();
@@ -21,7 +19,7 @@ public class Network {
 
     public void addNode(GlobalNode node) {
         this.nodeList.add(node);
-        Collections.sort(nodeList, Comparator.comparing(GlobalNode::getID));
+        nodeList.sort(Comparator.comparing(GlobalNode::getID));
     }
 
     public GlobalNode getNodeByID(Integer ID) {

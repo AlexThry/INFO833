@@ -1,12 +1,8 @@
-package DHT;
+package dht;
 
 import simulator.*;
-import simulator.MessagesObjects.LeaveObject;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class main {
+public class Main {
     public static void main(String[] args) throws InterruptedException {
 
         Network network = Network.getInstance();
@@ -47,20 +43,20 @@ public class main {
         Event join2 = new Event(26, 26, 50, joinRequestMessage, 1);
         Event join3 = new Event(59, 59, 34, joinRequestMessage, 6);
 
-        MessageObject leaveObject = new LeaveObject(network.getNodeByIP(10).getLeft(), network. getNodeByIP(10).getRight());
+        Message leaveRequestMessage1 = new Message(Message.LEAVE_REQUEST);
 
-        Message leaveMessage1 = new Message(Message.LEAVE, leaveObject);
-
-        Event leave1 = new Event(10, 10, 60, leaveMessage1, 10);
-        Event leave2 = new Event(10, 10, 34, leaveMessage1, 10);
+        Event leaveRequest1 = new Event(null, null, 10, leaveRequestMessage1, 10);
+        Event leaveRequest2 = new Event(null, null, 34, leaveRequestMessage1, 10);
 
         simulator.addEvent(join1);
         simulator.addEvent(join2);
         simulator.addEvent(join3);
+        simulator.addEvent(leaveRequest1);
+        simulator.addEvent(leaveRequest2);
 
-        simulator.run();
+        Simulator.run();
 
-        System.out.println(network.getNodeList());
+       Logger.log(network.getNodeList());
 
     }
 }
