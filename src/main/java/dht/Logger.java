@@ -27,6 +27,7 @@ public class Logger {
 
     private static String getEventType(Integer eventType) {
         return switch (eventType) {
+            case -1 -> "EVENT REFUSED";
             case 0 -> "JOIN REQUEST";
             case 1 -> "JOIN";
             case 2 -> "JOIN ACK";

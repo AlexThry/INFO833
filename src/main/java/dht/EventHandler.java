@@ -17,6 +17,7 @@ public class EventHandler extends GlobalEventHandler {
             case 2 -> this.joinAckHandler(event);
             case 3 -> this.leaveRequestHandler();
             case 4 -> this.leaveHandler(event);
+            default -> Logger.log("no event type");
         }
     }
 
@@ -46,6 +47,22 @@ public class EventHandler extends GlobalEventHandler {
         }
     }
 
+    private void insertLeft(Integer nodeID, Integer nodeIP, Integer right, Integer senderID, Integer senderIP, Message joinAckMessage) {
+        Logger.log(Logger.JOIN, nodeID, senderID);
+        Logger.log("JOINING " + senderID + " ON LEFT OF NODE " + nodeID);
+        Simulator.addEvent(new Event(nodeID, nodeIP, right, joinAckMessage, simulator.calculateEventArrivalTime()));
+        node.setLeft(senderID);
+        Network.getNodeByIP(senderIP).setRight(nodeID);
+    }
+
+    private void insertRight(Integer nodeID, Integer nodeIP, Integer left, Integer senderID, Integer senderIP, Message joinAckMessage) {
+        Logger.log(Logger.JOIN, nodeID, senderID);
+        Logger.log("JOINING " + senderID + " ON RIGHT OF NODE " + nodeID);
+        Simulator.addEvent(new Event(nodeID, nodeIP, left, joinAckMessage, simulator.calculateEventArrivalTime()));
+        node.setRight(senderID);
+        Network.getNodeByIP(senderIP).setLeft(nodeID);
+    }
+
     public void joinHandler(Event event) {
         Integer senderID = event.getSenderID();
         Integer senderIP = event.getSenderIP();
@@ -54,30 +71,28 @@ public class EventHandler extends GlobalEventHandler {
         Integer left = node.getLeft();
         Integer right = node.getRight();
 
-        boolean insertRight = (senderID > nodeID && nodeID > right) || (senderID > nodeID && senderID < right);
-
         Message joinAckMessage = new Message(Message.JOIN_ACK);
 
+        boolean insertRightEnd = (senderID < nodeID && senderID < left);
+        boolean insertLeftStart = (senderID > nodeID && senderID > right);
+        boolean insertRight = (senderID > nodeID);
+
         Logger.log(event);
-        if (insertRight) {
-            Logger.log(Logger.JOIN, nodeID, senderID);
-            Logger.log("JOINING " + senderID + " ON RIGHT OF NODE " + nodeID);
-            Simulator.addEvent(new Event(nodeID, nodeIP, left, joinAckMessage, simulator.calculateEventArrivalTime()));
-            node.setRight(senderID);
-            Network.getNodeByIP(senderIP).setLeft(nodeID);
+        if (insertRightEnd) {
+            insertRight(nodeID, nodeIP, left, senderID, senderIP, joinAckMessage);
+        } else if (insertLeftStart) {
+            insertLeft(nodeID, nodeIP, right, senderID, senderIP, joinAckMessage);
+        } else if (insertRight) {
+            insertRight(nodeID, nodeIP, left, senderID, senderIP, joinAckMessage);
         } else {
-            Logger.log(Logger.JOIN, nodeID, senderID);
-            Logger.log("JOINING " + senderID + " ON LEFT OF NODE " + nodeID);
-            Simulator.addEvent(new Event(nodeID, nodeIP, right, joinAckMessage, simulator.calculateEventArrivalTime()));
-            node.setLeft(senderID);
-            Network.getNodeByIP(senderIP).setRight(nodeID);
+            insertLeft(nodeID, nodeIP, right, senderID, senderIP, joinAckMessage);
         }
     }
 
     public void joinAckHandler(Event event) {
+        Logger.log("receiving join ack from " + event.getSenderID());
         Integer nodeID = node.getID();
         Integer senderID = event.getSenderID();
-
         Logger.log(Logger.JOIN_ACK, senderID, nodeID);
     }
 

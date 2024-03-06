@@ -2,6 +2,7 @@ package simulator;
 
 public class Message {
 
+    public static final Integer EVENT_REFUSED = -1;
     public static final Integer JOIN_REQUEST = 0;
     public static final Integer JOIN = 1;
     public static final Integer JOIN_ACK = 2;

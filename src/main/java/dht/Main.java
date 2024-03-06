@@ -3,7 +3,7 @@ package dht;
 import simulator.*;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
 
         Node node1 = new Node(10, 10);
         Node node2 = new Node(34, 34);
@@ -38,7 +38,7 @@ public class Main {
 
         Event join1 = new Event(61, 61, 34, joinRequestMessage, 1);
         Event join2 = new Event(26, 26, 50, joinRequestMessage, 1);
-        Event join3 = new Event(1, 1, 34, joinRequestMessage, 10);
+        Event join3 = new Event(1, 1, 34, joinRequestMessage, 1);
 
         Message leaveRequestMessage1 = new Message(Message.LEAVE_REQUEST);
 
@@ -47,11 +47,11 @@ public class Main {
 
         Simulator.addEvent(join1);
         Simulator.addEvent(join2);
-//        Simulator.addEvent(join3);
-//        Simulator.addEvent(leaveRequest1);
-//        Simulator.addEvent(leaveRequest2);
+        Simulator.addEvent(join3);
+        Simulator.addEvent(leaveRequest1);
+        Simulator.addEvent(leaveRequest2);
 
-        Simulator.run();
+        Simulator.run(null);
 
        Logger.log(Network.getNodeList());
 

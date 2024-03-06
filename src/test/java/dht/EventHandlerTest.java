@@ -46,7 +46,7 @@ class EventHandlerTest {
     }
 
     @Test
-    void joinRequestHandler() {
+    void joinRequestHandler() throws InterruptedException {
 
         Node node5 = new Node(61, 1);
         Node node6 = new Node(26, 2);
@@ -58,15 +58,17 @@ class EventHandlerTest {
 
         Message joinRequestMessage = new Message(Message.JOIN_REQUEST);
 
-        Event join1 = new Event(61, 1, 34, joinRequestMessage, 1);
-        Event join2 = new Event(26, 2, 50, joinRequestMessage, 1);
-        Event join3 = new Event(-1, 3, 34, joinRequestMessage, 1);
+        Event join1 = new Event(61, 1, 34, joinRequestMessage, 0);
+        Event join2 = new Event(26, 2, 50, joinRequestMessage, 5);
+        Event join3 = new Event(-1, 3, 34, joinRequestMessage, 10);
 
         Simulator.addEvent(join1);
         Simulator.addEvent(join2);
         Simulator.addEvent(join3);
 
-        Simulator.run();
+        Simulator.run(null);
+
+        Logger.log(Network.getNodeList());
 
         assertEquals(60, Network.getNodeByIP(1).getLeft());
         assertEquals(-1, Network.getNodeByIP(1).getRight());
@@ -78,23 +80,23 @@ class EventHandlerTest {
         assertEquals(10, Network.getNodeByIP(3).getRight());
     }
 
-    @Test
-    void joinHandler() {
-    }
-
-    @Test
-    void joinAckHandler() {
-    }
-
-    @Test
-    void leaveRequestHandler() {
-    }
-
-    @Test
-    void leaveHandler() {
-    }
-
-    @Test
-    void getClosestRouter() {
-    }
+//    @Test
+//    void joinHandler() {
+//    }
+//
+//    @Test
+//    void joinAckHandler() {
+//    }
+//
+//    @Test
+//    void leaveRequestHandler() {
+//    }
+//
+//    @Test
+//    void leaveHandler() {
+//    }
+//
+//    @Test
+//    void getClosestRouter() {
+//    }
 }

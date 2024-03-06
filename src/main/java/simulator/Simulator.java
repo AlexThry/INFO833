@@ -15,7 +15,7 @@ public class Simulator {
         return instance;
     }
 
-    public static void run() {
+    public static void run(Integer delay) throws InterruptedException {
         // Time
         while (!eventList.isEmpty()) {
             while (!eventList.isEmpty()) {
@@ -26,6 +26,10 @@ public class Simulator {
                 } else {
                     break;
                 }
+            }
+
+            if (delay != null) {
+                Thread.sleep(delay);
             }
             time += 1;
         }
@@ -40,7 +44,7 @@ public class Simulator {
         eventList.sort(Comparator.comparing(Event::getArrivalTime));
     }
 
-    public Integer calculateEventArrivalTime() {
+    public static Integer calculateEventArrivalTime() {
         // TODO: calculate time
         return (time + 2);
     }
