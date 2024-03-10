@@ -25,32 +25,41 @@ public class EventHandler extends GlobalEventHandler {
 
         Integer senderID = event.getSenderID();
         Integer senderIP = event.getSenderIP();
-        Integer nodeID = this.node.getID();
+        Integer nodeID = node.getID();
 
-        boolean insertRight = (senderID > nodeID && nodeID > node.getRight()) || (senderID > nodeID && senderID < node.getRight());
-        boolean insertLeft = (senderID < nodeID && nodeID < node.getLeft()) || (senderID < nodeID && senderID > node.getLeft());
-
-        if (insertLeft) {
-            Logger.log(Logger.JOIN, nodeID, node.getLeft(), senderID);
-            Simulator.addEvent(new Event(senderID, senderIP, node.getLeft(), new Message(Message.JOIN), simulator.calculateEventArrivalTime()));
-            node.setLeft(senderID);
-            Network.getNodeByIP(senderIP).setRight(nodeID);
-        } else if (insertRight) {
-            Logger.log(Logger.JOIN, nodeID, node.getRight(), senderID);
-            Simulator.addEvent(new Event(senderID, senderIP, node.getRight(), new Message(Message.JOIN), simulator.calculateEventArrivalTime()));
-            node.setRight(senderID);
-            Network.getNodeByIP(senderIP).setLeft(nodeID);
+        if (node.getRight() == null || node.getLeft() == null) {
+            System.out.println("Node left. Redirecting (joinRequest)");
+            Integer router = Network.getRandomDHTNode().getID();
+            Message joinRequestMessage = new Message(Message.JOIN_REQUEST);
+            Event newEvent = new Event(senderID, senderIP, router, joinRequestMessage, Simulator.calculateEventArrivalTime(node.getID(), router));
+            Simulator.addEvent(newEvent);
         } else {
-            Integer closest = getClosestRouter(event);
-            Logger.log(Logger.JOIN_REQUEST, nodeID, closest, senderID);
-            Simulator.addEvent(new Event(senderID, senderIP, closest, new Message(Message.JOIN_REQUEST), simulator.calculateEventArrivalTime()));
+            boolean insertRight = (senderID > nodeID && nodeID > node.getRight()) || (senderID > nodeID && senderID < node.getRight());
+            boolean insertLeft = (senderID < nodeID && nodeID < node.getLeft()) || (senderID < nodeID && senderID > node.getLeft());
+
+            if (insertLeft) {
+                Logger.log(Logger.JOIN, nodeID, node.getLeft(), senderID);
+                Simulator.addEvent(new Event(senderID, senderIP, node.getLeft(), new Message(Message.JOIN), simulator.calculateEventArrivalTime(nodeID, node.getLeft())));
+                node.setLeft(senderID);
+                Network.getNodeByIP(senderIP).setRight(nodeID);
+            } else if (insertRight) {
+                Logger.log(Logger.JOIN, nodeID, node.getRight(), senderID);
+                Simulator.addEvent(new Event(senderID, senderIP, node.getRight(), new Message(Message.JOIN), simulator.calculateEventArrivalTime(nodeID, node.getRight())));
+                node.setRight(senderID);
+                Network.getNodeByIP(senderIP).setLeft(nodeID);
+            } else {
+                Integer closest = getClosestRouter(event.getSenderID());
+                Logger.log(Logger.JOIN_REQUEST, nodeID, closest, senderID);
+                Simulator.addEvent(new Event(senderID, senderIP, closest, new Message(Message.JOIN_REQUEST), simulator.calculateEventArrivalTime(nodeID, closest)));
+            }
         }
+
     }
 
     private void insertLeft(Integer nodeID, Integer nodeIP, Integer right, Integer senderID, Integer senderIP, Message joinAckMessage) {
         Logger.log(Logger.JOIN, nodeID, senderID);
         Logger.log("JOINING " + senderID + " ON LEFT OF NODE " + nodeID);
-        Simulator.addEvent(new Event(nodeID, nodeIP, right, joinAckMessage, simulator.calculateEventArrivalTime()));
+        Simulator.addEvent(new Event(nodeID, nodeIP, right, joinAckMessage, simulator.calculateEventArrivalTime(nodeID, right)));
         node.setLeft(senderID);
         Network.getNodeByIP(senderIP).setRight(nodeID);
     }
@@ -58,7 +67,7 @@ public class EventHandler extends GlobalEventHandler {
     private void insertRight(Integer nodeID, Integer nodeIP, Integer left, Integer senderID, Integer senderIP, Message joinAckMessage) {
         Logger.log(Logger.JOIN, nodeID, senderID);
         Logger.log("JOINING " + senderID + " ON RIGHT OF NODE " + nodeID);
-        Simulator.addEvent(new Event(nodeID, nodeIP, left, joinAckMessage, simulator.calculateEventArrivalTime()));
+        Simulator.addEvent(new Event(nodeID, nodeIP, left, joinAckMessage, simulator.calculateEventArrivalTime(nodeID, left)));
         node.setRight(senderID);
         Network.getNodeByIP(senderIP).setLeft(nodeID);
     }
@@ -66,26 +75,36 @@ public class EventHandler extends GlobalEventHandler {
     public void joinHandler(Event event) {
         Integer senderID = event.getSenderID();
         Integer senderIP = event.getSenderIP();
-        Integer nodeID = node.getID();
-        Integer nodeIP = node.getIP();
-        Integer left = node.getLeft();
-        Integer right = node.getRight();
 
-        Message joinAckMessage = new Message(Message.JOIN_ACK);
 
-        boolean insertRightEnd = (senderID < nodeID && senderID < left);
-        boolean insertLeftStart = (senderID > nodeID && senderID > right);
-        boolean insertRight = (senderID > nodeID);
-
-        Logger.log(event);
-        if (insertRightEnd) {
-            insertRight(nodeID, nodeIP, left, senderID, senderIP, joinAckMessage);
-        } else if (insertLeftStart) {
-            insertLeft(nodeID, nodeIP, right, senderID, senderIP, joinAckMessage);
-        } else if (insertRight) {
-            insertRight(nodeID, nodeIP, left, senderID, senderIP, joinAckMessage);
+        if (node.getLeft() == null || node.getRight() == null) {
+            System.out.println("Node left. Redirecting (join)");
+            Integer router = Network.getRandomDHTNode().getID();
+            System.out.println(router);
+            Message joinRequestMessage = new Message(Message.JOIN_REQUEST);
+            Event newEvent = new Event(senderID, senderIP, router, joinRequestMessage, Simulator.calculateEventArrivalTime(node.getID(), router));
+            Simulator.addEvent(newEvent);
         } else {
-            insertLeft(nodeID, nodeIP, right, senderID, senderIP, joinAckMessage);
+            Integer nodeID = node.getID();
+            Integer nodeIP = node.getIP();
+            Integer left = node.getLeft();
+            Integer right = node.getRight();
+
+            Message joinAckMessage = new Message(Message.JOIN_ACK);
+
+            boolean insertRightEnd = (senderID < nodeID && senderID < left);
+            boolean insertLeftStart = (senderID > nodeID && senderID > right);
+            boolean insertRight = (senderID > nodeID);
+
+            if (insertRightEnd) {
+                insertRight(nodeID, nodeIP, left, senderID, senderIP, joinAckMessage);
+            } else if (insertLeftStart) {
+                insertLeft(nodeID, nodeIP, right, senderID, senderIP, joinAckMessage);
+            } else if (insertRight) {
+                insertRight(nodeID, nodeIP, left, senderID, senderIP, joinAckMessage);
+            } else {
+                insertLeft(nodeID, nodeIP, right, senderID, senderIP, joinAckMessage);
+            }
         }
     }
 
@@ -110,12 +129,12 @@ public class EventHandler extends GlobalEventHandler {
 
         Message leaveMessage = new Message(Message.LEAVE, leaveObject);
 
-        Simulator.addEvent(new Event(nodeID, nodeIP, node.getLeft(), leaveMessage, simulator.calculateEventArrivalTime()));
-        Simulator.addEvent(new Event(nodeID, nodeIP, node.getRight(), leaveMessage, simulator.calculateEventArrivalTime()));
+        Simulator.addEvent(new Event(nodeID, nodeIP, node.getLeft(), leaveMessage, simulator.calculateEventArrivalTime(nodeID, node.getLeft())));
+        Simulator.addEvent(new Event(nodeID, nodeIP, node.getRight(), leaveMessage, simulator.calculateEventArrivalTime(nodeID, node.getRight())));
 
         for (Integer knownNode: node.getKnownNodes()) {
             Logger.log(Logger.LEAVE_REQUEST, nodeID, knownNode);
-            Simulator.addEvent(new Event(nodeID, nodeIP, knownNode, leaveMessage, simulator.calculateEventArrivalTime()));
+            Simulator.addEvent(new Event(nodeID, nodeIP, knownNode, leaveMessage, simulator.calculateEventArrivalTime(nodeID, knownNode)));
         }
 
         node.setLeft(null);
@@ -141,10 +160,9 @@ public class EventHandler extends GlobalEventHandler {
         }
     }
 
-    public Integer getClosestRouter(Event event) {
+    public Integer getClosestRouter(Integer senderId) {
         // Initialisation
         Integer closest = node.getRight();
-        Integer senderId = event.getSenderID();
 
         if ((Math.abs(senderId - node.getLeft())) < (Math.abs(senderId - closest))) {
             closest = node.getLeft();
