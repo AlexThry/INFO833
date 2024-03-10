@@ -1,8 +1,7 @@
 package dht;
 
-import simulator.Event;
-import simulator.GlobalNode;
-import simulator.Message;
+import simulator.*;
+import simulator.MessagesObjects.LeaveObject;
 
 import java.util.ArrayList;
 
@@ -21,6 +20,19 @@ public class Node extends GlobalNode {
         eventHandler.handleEvent(event);
     }
 
+    public void leave() {
+
+        LeaveObject leaveObject = new LeaveObject(left, right);
+        Message leaveMessage = new Message(Message.LEAVE, leaveObject);
+
+        Event leaveLeft = new Event(ID, IP, left, leaveMessage, Simulator.calculateEventArrivalTime(ID, left));
+        Event leaveRight = new Event(ID, IP, left, leaveMessage, Simulator.calculateEventArrivalTime(ID, right));
+
+
+        Simulator.addEvent(leaveLeft);
+        Simulator.addEvent(leaveRight);
+    }
+
     @Override
     public String toString() {
         return "Node{" +
@@ -28,7 +40,7 @@ public class Node extends GlobalNode {
                 ", right=" + right +
                 ", knownNodes=" + knownNodes +
                 ", ID=" + ID +
-                ", IP=" + IP +
+                ", networkNodeId=" + networkNodeId +
                 '}';
     }
 }

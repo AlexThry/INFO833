@@ -44,9 +44,9 @@ public class Simulator {
         eventList.sort(Comparator.comparing(Event::getArrivalTime));
     }
 
-    public static Integer calculateEventArrivalTime() {
-        // TODO: calculate time
-        return (time + 2);
+    public static Integer calculateEventArrivalTime(Integer currentNodeID, Integer routerNodeID) {
+        return time + Network.calculateArrivalTime(currentNodeID, routerNodeID);
+//        return time+2;
     }
 
     public Integer getTime() {

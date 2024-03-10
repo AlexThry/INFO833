@@ -4,13 +4,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public abstract class GlobalNode {
+public abstract class GlobalNode implements Node {
     protected Integer left;
     protected Integer right;
     protected List<Integer> knownNodes;
     protected Integer ID;
     protected Integer IP;
     protected Simulator simulator = Simulator.getInstance();
+    protected Integer physicalX;
+    protected Integer physicalY;
+    protected Integer networkNodeId;
 
     protected GlobalNode(Integer ID, Integer IP) {
         this(new ArrayList<>(), ID, IP);
@@ -59,5 +62,29 @@ public abstract class GlobalNode {
 
     public Integer getRight() {
         return right;
+    }
+
+    public Integer getPhysicalX() {
+        return physicalX;
+    }
+
+    public Integer getPhysicalY() {
+        return physicalY;
+    }
+
+    public void setPhysicalX(Integer physicalX) {
+        this.physicalX = physicalX;
+    }
+
+    public void setPhysicalY(Integer physicalY) {
+        this.physicalY = physicalY;
+    }
+
+    public Integer getNetworkNodeId() {
+        return networkNodeId;
+    }
+
+    public void setNetworkNodeId(Integer networkNodeId) {
+        this.networkNodeId = networkNodeId;
     }
 }

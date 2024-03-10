@@ -5,6 +5,7 @@ import simulator.*;
 public class Main {
     public static void main(String[] args) throws InterruptedException {
 
+
         Node node1 = new Node(10, 10);
         Node node2 = new Node(34, 34);
         Node node3 = new Node(50, 50);
@@ -50,10 +51,15 @@ public class Main {
         Simulator.addEvent(join3);
         Simulator.addEvent(leaveRequest1);
         Simulator.addEvent(leaveRequest2);
+//        node1.leave();
+//        node2.leave();
 
         Simulator.run(null);
 
-       Logger.log(Network.getNodeList());
+
+        Logger.log(Network.getNetworkNodesList());
+        Logger.log("----------");
+        Logger.log(Network.getNodeList());
 
     }
 }
