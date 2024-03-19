@@ -39,8 +39,7 @@ public class Network {
     public static GlobalNode getRandomDHTNode() {
         List<GlobalNode> eligibleNodes = new ArrayList<>();
         for (GlobalNode node : nodeList) {
-            NetworkNode networkNode = getNetworkNodeByID(node.getNetworkNodeId());
-            if (networkNode.getKnownNodes().size() >= 2) {
+            if (node.getRight() != null && node.getLeft() != null) {
                 eligibleNodes.add(node);
             }
         }

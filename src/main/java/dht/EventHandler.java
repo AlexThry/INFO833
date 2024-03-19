@@ -17,6 +17,7 @@ public class EventHandler extends GlobalEventHandler {
             case 2 -> this.joinAckHandler(event);
             case 3 -> this.leaveRequestHandler();
             case 4 -> this.leaveHandler(event);
+            case 5 -> this.sendHandler(event);
             default -> Logger.log("no event type");
         }
     }
@@ -28,8 +29,8 @@ public class EventHandler extends GlobalEventHandler {
         Integer nodeID = node.getID();
 
         if (node.getRight() == null || node.getLeft() == null) {
-            System.out.println("Node left. Redirecting (joinRequest)");
             Integer router = Network.getRandomDHTNode().getID();
+            System.out.println(node + " Node left. Redirecting (joinRequest) to " + router);
             Message joinRequestMessage = new Message(Message.JOIN_REQUEST);
             Event newEvent = new Event(senderID, senderIP, router, joinRequestMessage, Simulator.calculateEventArrivalTime(node.getID(), router));
             Simulator.addEvent(newEvent);
@@ -78,8 +79,8 @@ public class EventHandler extends GlobalEventHandler {
 
 
         if (node.getLeft() == null || node.getRight() == null) {
-            System.out.println("Node left. Redirecting (join)");
             Integer router = Network.getRandomDHTNode().getID();
+            System.out.println(node + " Node left. Redirecting (join) to " + router);
             System.out.println(router);
             Message joinRequestMessage = new Message(Message.JOIN_REQUEST);
             Event newEvent = new Event(senderID, senderIP, router, joinRequestMessage, Simulator.calculateEventArrivalTime(node.getID(), router));
@@ -158,6 +159,11 @@ public class EventHandler extends GlobalEventHandler {
         } else {
             node.getKnownNodes().remove(senderID);
         }
+    }
+
+    public void sendHandler(Event event) {
+        Logger.log("Sending message");
+
     }
 
     public Integer getClosestRouter(Integer senderId) {

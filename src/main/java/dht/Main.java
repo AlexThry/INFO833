@@ -46,19 +46,16 @@ public class Main {
         Event leaveRequest1 = new Event(null, null, 10, leaveRequestMessage1, 10);
         Event leaveRequest2 = new Event(null, null, 34, leaveRequestMessage1, 10);
 
+
         Simulator.addEvent(join1);
         Simulator.addEvent(join2);
         Simulator.addEvent(join3);
         Simulator.addEvent(leaveRequest1);
         Simulator.addEvent(leaveRequest2);
-//        node1.leave();
-//        node2.leave();
 
-        Simulator.run(null);
 
 
         Logger.log(Network.getNetworkNodesList());
-        Logger.log("----------");
         Logger.log(Network.getNodeList());
 
     }
