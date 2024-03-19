@@ -36,10 +36,10 @@ public class Network {
         }
     }
 
-    public static GlobalNode getRandomDHTNode() {
+    public static GlobalNode getRandomDHTNode(Integer nodeID) {
         List<GlobalNode> eligibleNodes = new ArrayList<>();
         for (GlobalNode node : nodeList) {
-            if (node.getRight() != null && node.getLeft() != null) {
+            if (node.getRight() != null && node.getLeft() != null && node.getID() != nodeID) {
                 eligibleNodes.add(node);
             }
         }

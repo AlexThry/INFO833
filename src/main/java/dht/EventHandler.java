@@ -29,7 +29,7 @@ public class EventHandler extends GlobalEventHandler {
         Integer nodeID = node.getID();
 
         if (node.getRight() == null || node.getLeft() == null) {
-            Integer router = Network.getRandomDHTNode().getID();
+            Integer router = Network.getRandomDHTNode(null).getID();
             System.out.println(node + " Node left. Redirecting (joinRequest) to " + router);
             Message joinRequestMessage = new Message(Message.JOIN_REQUEST);
             Event newEvent = new Event(senderID, senderIP, router, joinRequestMessage, Simulator.calculateEventArrivalTime(node.getID(), router));
@@ -79,7 +79,7 @@ public class EventHandler extends GlobalEventHandler {
 
 
         if (node.getLeft() == null || node.getRight() == null) {
-            Integer router = Network.getRandomDHTNode().getID();
+            Integer router = Network.getRandomDHTNode(null).getID();
             System.out.println(node + " Node left. Redirecting (join) to " + router);
             System.out.println(router);
             Message joinRequestMessage = new Message(Message.JOIN_REQUEST);
