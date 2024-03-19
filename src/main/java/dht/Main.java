@@ -53,7 +53,7 @@ public class Main {
         Simulator.addEvent(leaveRequest1);
         Simulator.addEvent(leaveRequest2);
 
-
+        Simulator.run(null);
 
         Logger.log(Network.getNetworkNodesList());
         Logger.log(Network.getNodeList());
