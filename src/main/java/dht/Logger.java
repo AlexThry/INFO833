@@ -11,7 +11,9 @@ public class Logger {
     public static final Integer JOIN_ACK = 2;
     public static final Integer LEAVE_REQUEST = 3;
     public static final Integer LEAVE = 4;
-
+    public static final Integer SEND = 5;
+    public static final Integer FORWARD = 6;
+    public static final Integer DELIVER = 7;
 
     public static void log(Integer eventType, Integer routerID, Integer receiverID, Integer senderID) {
         System.out.println(getMessage(eventType, routerID, receiverID, senderID));
@@ -33,7 +35,9 @@ public class Logger {
             case 2 -> "JOIN ACK";
             case 3 -> "LEAVE REQUEST";
             case 4 -> "LEAVE";
-            //...
+            case 5 -> "SEND";
+            case 6 -> "FORWARD";
+            case 7 -> "DELIVER";
             default -> "";
         };
     }
@@ -41,22 +45,79 @@ public class Logger {
     private static String getMessage(Integer eventType, Integer routerID, Integer receiverID, Integer senderID) {
 
         String eventTypeStr = getEventType(eventType);
+        String message = null;
 
-        String message = "EVENT EXECUTED: " +
-                eventTypeStr +
-                "\nAT TIME: " +
-                simulator.getTime() +
-                "\nFROM NODE: " +
-                routerID +
-                "\nTO NODE: " +
-                receiverID;
+        if (eventTypeStr.equals("DELIVER")) {
+            message = "EVENT EXECUTED: " +
+                    eventTypeStr +
+                    "\nAT TIME: " +
+                    simulator.getTime() +
+                    "\nSender node: "+
+                    senderID +
+                    "\nRouter node: " +
+                    routerID +
+                    "\nDestination node: " +
+                    receiverID;
+        } else if (eventTypeStr.equals("FORWARD")||eventTypeStr.equals("SEND")) {
+            message = "EVENT EXECUTED: " +
+                    eventTypeStr +
+                    "\nAT TIME: " +
+                    simulator.getTime() +
+                    "\nSender node: "+
+                    senderID +
+                    "\nRouter node: " +
+                    routerID +
+                    "\nDestination node: " +
+                    receiverID;
+        } else if (eventTypeStr.equals("JOIN") || eventTypeStr.equals("JOIN REQUEST")) {
+            message = "EVENT EXECUTED: " +
+                    eventTypeStr +
+                    "\nAT TIME: " +
+                    simulator.getTime() +
+                    "\nRouter node: " +
+                    routerID +
+                    "\nReceiver node: " +
+                    receiverID;
 
-        if (senderID != null) {
-            message += "\nFOR NODE: " +
-                            senderID;
+            if (senderID != null) {
+                message += "\nNode to insert: " +
+                        senderID;
+            }
+        } else if (eventTypeStr.equals("JOIN ACK")) {
+            message = "EVENT EXECUTED: " +
+                    eventTypeStr +
+                    "\nAT TIME: " +
+                    simulator.getTime() +
+                    "\nJoining node: " +
+                    routerID +
+                    "\nAck sender: " +
+                    receiverID;
+        } else if (eventTypeStr.equals("LEAVE REQUEST")) {
+            message = "EVENT EXECUTED: " +
+                    eventTypeStr +
+                    "\nAT TIME: " +
+                    simulator.getTime() +
+                    "\nNode leaving: " +
+                    routerID +
+                    "\nNode concerned (neighbor): " +
+                    receiverID;
+        } else if (eventTypeStr.equals("LEAVE")){
+            message = "EVENT EXECUTED: " +
+                    eventTypeStr +
+                    "\nAT TIME: " +
+                    simulator.getTime() +
+                    "\nNode concerned (old neighbor): " +
+                    routerID +
+                    "\nNode leaving : " +
+                    receiverID;
+        }else if (eventTypeStr.equals("EVENT REFUSED")) {
+            message = "EVENT EXECUTED: " +
+                    eventTypeStr +
+                    "\nAT TIME: " +
+                    simulator.getTime();
         }
 
-        message += "\n----------";
+        message += "\n----------\n";
         return message;
     }
 
@@ -64,4 +125,3 @@ public class Logger {
         return getMessage(eventType, routerID, receiverID, null);
     }
 }
-

@@ -53,6 +53,23 @@ public class Network {
         return eligibleNodes.get(rand.nextInt(eligibleNodes.size()));
     }
 
+    public static GlobalNode getRandomDHTNodeWithoutSenderNode(Integer senderNodeId) {
+        List<GlobalNode> eligibleNodes = new ArrayList<>();
+        for (GlobalNode node : nodeList) {
+            NetworkNode networkNode = getNetworkNodeByID(node.getNetworkNodeId());
+            if (networkNode.getKnownNodes().size() >= 2 && node.getID() != senderNodeId) {
+                eligibleNodes.add(node);
+            }
+        }
+
+        if (eligibleNodes.isEmpty()) {
+            return null;
+        }
+
+        Random rand = new Random();
+        return eligibleNodes.get(rand.nextInt(eligibleNodes.size()));
+    }
+
     public static void addNetworkNode(NetworkNode node) {
         Integer limitDistance = 1000;
         networkNodesList.add(node);

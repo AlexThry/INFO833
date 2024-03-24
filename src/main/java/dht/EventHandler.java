@@ -2,6 +2,7 @@ package dht;
 
 import simulator.*;
 import simulator.MessagesObjects.LeaveObject;
+import simulator.MessagesObjects.SendObject;
 
 import java.util.Objects;
 
@@ -17,6 +18,9 @@ public class EventHandler extends GlobalEventHandler {
             case 2 -> this.joinAckHandler(event);
             case 3 -> this.leaveRequestHandler();
             case 4 -> this.leaveHandler(event);
+            case 5 -> this.sendHandler(event);
+            case 6 -> this.forwardHandler(event);
+            case 7 -> this.deliverHandler(event);
             default -> Logger.log("no event type");
         }
     }
@@ -48,7 +52,7 @@ public class EventHandler extends GlobalEventHandler {
                 node.setRight(senderID);
                 Network.getNodeByIP(senderIP).setLeft(nodeID);
             } else {
-                Integer closest = getClosestRouter(event.getSenderID());
+                Integer closest = getClosestRouterJoin(event.getSenderID());
                 Logger.log(Logger.JOIN_REQUEST, nodeID, closest, senderID);
                 Simulator.addEvent(new Event(senderID, senderIP, closest, new Message(Message.JOIN_REQUEST), simulator.calculateEventArrivalTime(nodeID, closest)));
             }
@@ -160,10 +164,99 @@ public class EventHandler extends GlobalEventHandler {
         }
     }
 
-    public Integer getClosestRouter(Integer senderId) {
+    public void sendHandler(Event event) {
+        Integer senderID = event.getSenderID();
+        Integer senderIP = event.getSenderIP();
+
+        if (node.getRight() == null || node.getLeft() == null) {
+            Logger.log("\n----------\n"+"The sender " + senderID + " is not in the DHT."+"\n----------\n");
+            return;
+        }
+
+        Integer destinationIdID = event.getDestinationId();
+        Integer nodeID = node.getID();
+
+        Message message = event.getMessage();
+        SendObject object = (SendObject) message.getContent();
+        Integer closest = getClosestRouterSend(destinationIdID);
+
+        Logger.log(Logger.SEND, closest, destinationIdID, senderID);
+
+        if (closest.equals(destinationIdID)) {
+            Message deliverMessage = new Message(Message.DELIVER, object);
+            Event deliverEvent = new Event(senderID, senderIP, destinationIdID, deliverMessage, destinationIdID, Simulator.calculateEventArrivalTime(nodeID, destinationIdID));
+            Simulator.addEvent(deliverEvent);
+        } else {
+            // Transférons le message à un nœud plus proche
+            Message forwardMessage = new Message(Message.FORWARD, object);
+            Event newEvent = new Event(senderID, senderIP, closest, forwardMessage, destinationIdID, simulator.calculateEventArrivalTime(nodeID, closest));
+            Simulator.addEvent(newEvent);
+        }
+
+    }
+
+    public boolean handleSendLeaveNode(Event event) {
+        Integer senderID = event.getSenderID();
+        Integer nodeID = node.getID();
+        Boolean destinationNotGone = true;
+        if (senderID > nodeID) { // tourne vers la droite dans le cercle
+            destinationNotGone = node.getLeft() != null || node.getLeft() < nodeID;
+        } else if (senderID < nodeID) { // tourne vers la gauche
+            destinationNotGone = node.getRight() != null || node.getRight() > nodeID;
+        } else {
+            destinationNotGone = false;
+        }
+        return destinationNotGone;
+    }
+
+
+    public void forwardHandler(Event event) {
+        Integer senderID = event.getSenderID();
+        Integer senderIP = event.getSenderIP();
+        Integer routerID = event.getRouterID();
+        Integer destinationIdID = event.getDestinationId();
+        Integer nodeID = node.getID();
+
+        if (node.getRight() == null || node.getLeft() == null) {
+            Logger.log("\n----------\n"+"The sender " + senderID + " is not in the DHT."+"\n----------\n");
+            return;
+        }
+
+        Boolean noReceiver =!handleSendLeaveNode(event);
+        if (noReceiver){
+            Logger.log("\n----------\n"+"The receiver " + destinationIdID + " has left, send not possible."+"\n----------\n");
+            return;
+        }
+
+        Message message = event.getMessage();
+        SendObject object = (SendObject) message.getContent();
+        Integer closest = getClosestRouterSend(destinationIdID);
+
+        Logger.log(Logger.FORWARD, closest, destinationIdID, routerID);
+
+        if (closest.equals(destinationIdID)) {
+            Message deliverMessage = new Message(Message.DELIVER, object);
+            Event deliverEvent = new Event(senderID, senderIP, destinationIdID, deliverMessage, destinationIdID, Simulator.calculateEventArrivalTime(nodeID, destinationIdID));
+            Simulator.addEvent(deliverEvent);
+        } else {
+            Message forwardMessage = new Message(Message.FORWARD, object);
+            Event newEvent = new Event(senderID, senderIP, closest, forwardMessage,destinationIdID, simulator.calculateEventArrivalTime(nodeID, closest));
+            Simulator.addEvent(newEvent);
+        }
+    }
+
+    public void deliverHandler(Event event) {
+        Message message = event.getMessage();
+        SendObject object = (SendObject) message.getContent();
+        Logger.log(Logger.DELIVER, node.getID(), event.getDestinationId(), event.getSenderID());
+//        Logger.log("Sender :" + event.getSenderID());
+//        Logger.log("Receiver :" + node.getID());
+//        Logger.log("Content :" + object.getMessage());
+    }
+
+    public Integer getClosestRouterJoin(Integer senderId) {
         // Initialisation
         Integer closest = node.getRight();
-
         if ((Math.abs(senderId - node.getLeft())) < (Math.abs(senderId - closest))) {
             closest = node.getLeft();
         }
@@ -171,6 +264,23 @@ public class EventHandler extends GlobalEventHandler {
         for (Integer nodeID : node.getKnownNodes()) {
             if ((Math.abs(senderId - nodeID)) < (Math.abs(senderId - closest))) {
                 closest = nodeID;
+            }
+        }
+        return closest;
+    }
+
+    public Integer getClosestRouterSend(Integer receiverId) {
+        Integer closest = node.getRight();
+        Integer closestGap = Math.abs(receiverId - closest);
+        if (Math.abs(receiverId - node.getLeft()) < closestGap) {
+            closest = node.getLeft();
+            closestGap = Math.abs(receiverId - closest);
+        }
+
+        for (int nodeID : node.getKnownNodes()) {
+            if (Math.abs(receiverId - nodeID) < closestGap) {
+                closest = nodeID;
+                closestGap = Math.abs(nodeID - closest);
             }
         }
         return closest;
