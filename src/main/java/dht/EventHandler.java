@@ -33,7 +33,7 @@ public class EventHandler extends GlobalEventHandler {
 
         if (node.getRight() == null || node.getLeft() == null) {
             System.out.println("Node left. Redirecting (joinRequest)");
-            Integer router = Network.getRandomDHTNode().getID();
+            Integer router = Network.getRandomDHTNode(senderID).getID();
             Message joinRequestMessage = new Message(Message.JOIN_REQUEST);
             Event newEvent = new Event(senderID, senderIP, router, joinRequestMessage, Simulator.calculateEventArrivalTime(node.getID(), router));
             Simulator.addEvent(newEvent);
@@ -63,7 +63,7 @@ public class EventHandler extends GlobalEventHandler {
     private void insertLeft(Integer nodeID, Integer nodeIP, Integer right, Integer senderID, Integer senderIP, Message joinAckMessage) {
         Logger.log(Logger.JOIN, nodeID, senderID);
         Logger.log("JOINING " + senderID + " ON LEFT OF NODE " + nodeID);
-        Simulator.addEvent(new Event(nodeID, nodeIP, right, joinAckMessage, simulator.calculateEventArrivalTime(nodeID, right)));
+        Simulator.addEvent(new Event(nodeID, nodeIP, right, joinAckMessage,senderID, simulator.calculateEventArrivalTime(nodeID, right)));
         node.setLeft(senderID);
         Network.getNodeByIP(senderIP).setRight(nodeID);
     }
@@ -71,7 +71,7 @@ public class EventHandler extends GlobalEventHandler {
     private void insertRight(Integer nodeID, Integer nodeIP, Integer left, Integer senderID, Integer senderIP, Message joinAckMessage) {
         Logger.log(Logger.JOIN, nodeID, senderID);
         Logger.log("JOINING " + senderID + " ON RIGHT OF NODE " + nodeID);
-        Simulator.addEvent(new Event(nodeID, nodeIP, left, joinAckMessage, simulator.calculateEventArrivalTime(nodeID, left)));
+        Simulator.addEvent(new Event(nodeID, nodeIP, left, joinAckMessage, senderID, simulator.calculateEventArrivalTime(nodeID, left)));
         node.setRight(senderID);
         Network.getNodeByIP(senderIP).setLeft(nodeID);
     }
@@ -83,7 +83,7 @@ public class EventHandler extends GlobalEventHandler {
 
         if (node.getLeft() == null || node.getRight() == null) {
             System.out.println("Node left. Redirecting (join)");
-            Integer router = Network.getRandomDHTNode().getID();
+            Integer router = Network.getRandomDHTNode(senderID).getID();
             System.out.println(router);
             Message joinRequestMessage = new Message(Message.JOIN_REQUEST);
             Event newEvent = new Event(senderID, senderIP, router, joinRequestMessage, Simulator.calculateEventArrivalTime(node.getID(), router));
@@ -114,9 +114,9 @@ public class EventHandler extends GlobalEventHandler {
 
     public void joinAckHandler(Event event) {
         Logger.log("receiving join ack from " + event.getSenderID());
-        Integer nodeID = node.getID();
+        Integer joiningNode = event.getDestinationId();
         Integer senderID = event.getSenderID();
-        Logger.log(Logger.JOIN_ACK, senderID, nodeID);
+        Logger.log(Logger.JOIN_ACK, senderID, joiningNode);
     }
 
     public void leaveRequestHandler() {

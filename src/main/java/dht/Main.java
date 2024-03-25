@@ -64,24 +64,13 @@ public class Main {
         Simulator.addEvent(send2);
         Simulator.addEvent(send3);
 
-
-        Logger.log("\n----------\n");
-        Logger.log("Noeuds du réseau :");
-        Logger.log(Network.getNetworkNodesList());
-        Logger.log("\n----------\n");
-        Logger.log("Noeuds :");
-        Logger.log(Network.getNodeList());
-        Logger.log("\n----------\n");
+        Logger.log("Noeuds du réseau :"+Network.getNetworkNodesList());
+        Logger.log("Noeuds :"+Network.getNodeList());
 
         Simulator.run(10);
 
-        Logger.log("\n----------\n");
-        Logger.log("Noeuds du réseau :");
-        Logger.log(Network.getNetworkNodesList());
-        Logger.log("\n----------\n");
-        Logger.log("Noeuds :");
-        Logger.log(Network.getNodeList());
-        Logger.log("\n----------\n");
+        Logger.log("Noeuds du réseau :"+Network.getNetworkNodesList());
+        Logger.log("Noeuds :"+Network.getNodeList());
 
     }
 }

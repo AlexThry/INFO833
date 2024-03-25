@@ -90,9 +90,9 @@ public class Logger {
                     "\nAT TIME: " +
                     simulator.getTime() +
                     "\nJoining node: " +
-                    routerID +
+                    receiverID +
                     "\nAck sender: " +
-                    receiverID;
+                    routerID;
         } else if (eventTypeStr.equals("LEAVE REQUEST")) {
             message = "EVENT EXECUTED: " +
                     eventTypeStr +
